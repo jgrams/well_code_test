@@ -1,8 +1,9 @@
 require "rspec"
 #tdd attempt at making a train display that will take a .csv file and return
-#an organized list list of trains and schedules.
+#an organized list of trains and schedules.
 
 class TrainDisplay
+  
   def open(file_path="trains.csv")
     file = File.open(file_path)
     file.read
@@ -17,4 +18,11 @@ describe TrainDisplay do
       expect(schedule.open).should be_a(String)
     end
   end
+
+  describe "#title_line" do
+    it "returns an HTML table based on " do
+      schedule = TrainDisplay.new
+      expect(schedule.open.).should equal("TRAIN_LINE, ROUTE_NAME, RUN_NUMBER, OPERATOR_ID")
+    end
+  end  
 end
