@@ -8,7 +8,7 @@ require 'pry'
 #controller
 class TrainDisplay
   
-  def open(file_path="files/trains.csv")
+  def open(file_path='files/trains.csv')
     @table_schedule = CSV.open(file_path, :headers => true)
   end
 
@@ -16,7 +16,14 @@ end
 
 #sinatra
 get '/schedule' do 
-  @table_schedule = @upload.open('files/' + params[:filename]) || TrainDisplay.new.open
+  binding.pry
+  #this should be touched up if this is expanded at all, it'll break things down the road
+  #as soon as I add anything else to params
+  if !params.empty?
+    @table_schedule = TrainDisplay.new.open('files/' << params[:filename])
+  else
+    @table_schedule = TrainDisplay.new.open
+  end
   erb :table_view 
 end
 
@@ -25,10 +32,12 @@ get '/upload' do
 end
 
 post "/upload" do 
+  binding.pry
   File.open('files/' + params['file'][:filename], "w") do |f|
     f.write(params['file'][:tempfile].read)
   end
   redirect '/schedule'
+  binding.pry
 end
 
 
