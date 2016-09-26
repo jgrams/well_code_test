@@ -3,18 +3,18 @@ require "rspec"
 #an organized list list of trains and schedules.
 
 class TrainDisplay
-  
-  def open
+  def open(file_path="trains.csv")
+    file = File.open(file_path)
+    file.read
   end
-  
+
 end
 
 describe TrainDisplay do
-  #describe can be swapped out for "context" depending on the context
   describe "#open" do
-    it "returns the contents of CSV file" do
+    it "returns the contents of CSV file as a string" do
       schedule = TrainDisplay.new
-      expect(schedule.open(5, 10)).should be_a(String)
+      expect(schedule.open).should be_a(String)
     end
   end
 end
