@@ -9,10 +9,6 @@ class TrainDisplay
     @csv_table = CSV.open(file_path, :headers => true)
   end
 
-  def title_line
-    @title_line = @csv_table.first
-  end
-
 end
 
 describe TrainDisplay do
