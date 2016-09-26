@@ -6,22 +6,20 @@ require "csv"
 class TrainDisplay
   
   def open(file_path="trains.csv")
-    file = File.open(file_path)
-    @contents = file.read
+    @csv_table = CSV.open(file_path, :headers => true)
   end
 
   def title_line
-    @contents = ""
-    @title_line = "TRAIN_LINE, ROUTE_NAME, RUN_NUMBER, OPERATOR_ID"
+    @title_line = @csv_table.first
   end
 
 end
 
 describe TrainDisplay do
   describe "#open" do
-    it "returns the contents of CSV file as a string" do
+    it "returns the contents of CSV file as a CSV ruby object" do
       schedule = TrainDisplay.new
-      expect(schedule.open).to be_instance_of(String)
+      expect(schedule.open).to be_instance_of(CSV)
     end
   end
 
