@@ -1,6 +1,6 @@
 require 'sinatra'
 require '/schedule_display.rb'
 
-get '/' do 
-  "Just Do It" 
+get '/schedule' do 
+  @table_schedule = TrainDisplay.new.open
 end

@@ -1,4 +1,4 @@
 Setup steps:
 
-1) Make sure you have rspec installed
-2)
+1) gem install rspec
+2) gem install sinatra
