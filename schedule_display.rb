@@ -20,8 +20,12 @@ get '/schedule' do
   erb :table_view 
 end
 
+get '/upload' do
+  erb :upload
+end
+
 post '/upload' do
-  
+
 end
 
 
