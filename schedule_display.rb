@@ -16,8 +16,12 @@ end
 
 #sinatra
 get '/schedule' do 
-  @table_schedule = TrainDisplay.new.open.read
+  @table_schedule = TrainDisplay.new.open
   erb :table_view 
+end
+
+post '/upload' do
+  
 end
 
 
