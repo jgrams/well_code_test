@@ -1,6 +1,5 @@
-<h1>File uploader!</h1>
-  <form>(method="post" enctype='multipart/form-data')   
-    <input>(type='file' name='myfile')    </input>
-    <br/>
-    <input>(type='submit' value='Upload!')</input>
-  </form>
+<h1>Upload a Schedule</h1>
+<form action="/upload" enctype="multipart/form-data" method="post">
+  <input name="file" type="file"></input>
+  <input type="submit" value="Upload"></input>
+</form>

@@ -8,7 +8,7 @@ require 'pry'
 #controller
 class TrainDisplay
   
-  def open(file_path="trains.csv")
+  def open(file_path="files/trains.csv")
     @table_schedule = CSV.open(file_path, :headers => true)
   end
 
@@ -16,7 +16,7 @@ end
 
 #sinatra
 get '/schedule' do 
-  @table_schedule = TrainDisplay.new.open
+  @table_schedule = @upload.open('files/' + params[:filename]) || TrainDisplay.new.open
   erb :table_view 
 end
 
@@ -24,8 +24,11 @@ get '/upload' do
   erb :upload
 end
 
-post '/upload' do
-
+post "/upload" do 
+  File.open('files/' + params['file'][:filename], "w") do |f|
+    f.write(params['file'][:tempfile].read)
+  end
+  redirect '/schedule'
 end
 
 
@@ -37,6 +40,4 @@ describe TrainDisplay do
       expect(schedule.open).to be_instance_of(CVS)
     end
   end
-
-
 end
