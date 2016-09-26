@@ -1,6 +1,7 @@
-require 'rspec'
 require 'csv'
 require 'sinatra'
+require 'rspec'
+require 'pry'
 #tdd attempt at making a train display that will take a .csv file and return
 #an organized list of trains and schedules.
 
