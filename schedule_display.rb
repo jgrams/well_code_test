@@ -9,7 +9,7 @@ require 'pry'
 #controller
 class TrainDisplay
 
-  def open(file_path='lib/trains.csv')
+  def open(file_path)
     @table_schedule = CSV.table(file_path, headers: true)
   end
 
@@ -41,6 +41,15 @@ class TrainDisplay
     CSV::Table.new(sorting_array)
   end
 
+  #runs the above functions for sinatra display
+  def schedule_open_and_display(file_path)
+    schedule = open(file_path)
+    schedule = make_entries_unique(schedule)
+    schedule = delete_empty_rows(schedule)
+    schedule = sort(schedule)
+    @table_schedule = schedule.read
+  end
+
   def upload(filename, file)
     File.open("lib/#{@filename}", 'wb') do |f|
       f.write(file.read)
@@ -56,8 +65,9 @@ end
 
 #this should be touched up by adding a method or page that allows you 
 #to select all uploaded schedules
-get '/first_schedule' do 
-  TrainDisplay.new.open
+get '/first_schedule' do
+  binding.pry
+  TrainDisplay.new.schedule_open_and_display('lib/trains.csv')
   erb :table_view 
 end
 
@@ -66,12 +76,13 @@ get '/upload' do
 end
 
 #saves new CSVs to /lib/[filename]
+#todo: test this method
 post '/upload' do 
   filename = params[:file][:filename]
   file = params[:file][:tempfile]
   obj = TrainDisplay.new.upload(filename, file)
 
-  @table_schedule = TrainDisplay.new.open("lib/#{@filename}")
+  @table_schedule = TrainDisplay.new.schedule_open_and_display("lib/#{@filename}")
   erb :table_view
 end
 
