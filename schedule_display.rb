@@ -38,7 +38,7 @@ class TrainDisplay
     sorting_array = []
     csv_table.each { |row| sorting_array.push(row)}
     sorting_array.sort_by! { |row| row[organize_by]}
-    CSV::Table.new(sorting_array)
+    return CSV::Table.new(sorting_array)
   end
 
   #runs the above functions for sinatra display
@@ -46,9 +46,7 @@ class TrainDisplay
     schedule = open(file_path)
     schedule = make_entries_unique(schedule)
     schedule = delete_empty_rows(schedule)
-    binding.pry
     sort(schedule)
-    binding.pry
   end
 
   def upload(filename, file)
@@ -100,8 +98,8 @@ describe TrainDisplay do
   describe "#sort" do
     it "organizes values based on a passed in header value" do
       schedule = TrainDisplay.new
-      sample_table = CSV.parse("Name,Age\nMaria,95\nDerek,55\nDan,34", headers: true)
-      expect(schedule.sort(sample_table, "Age").first["Age"]).to eq("34")
+      sample_table = CSV.parse("Name,Age\nMaria,95\nDerek,55\nDanielle,22\nJose,1", headers: true)
+      expect(schedule.sort(sample_table, "Age").first["Age"]).to eq("1")
     end
   end
 
@@ -118,6 +116,13 @@ describe TrainDisplay do
       schedule = TrainDisplay.new
       sample_table = CSV.parse("Name,Age\nDan,34\nMaria,55\n    ,  ", headers: true)
       expect(schedule.delete_empty_rows(sample_table).length).to equal(2)
+    end
+  end
+
+  describe "#schedule_open_and_display" do
+    it "runs all the sanetize and open function in a neat package for sinatra readability" do
+      schedule = TrainDisplay.new
+      expect(schedule.open('lib/trains.csv')).to be_instance_of(CSV::Table)
     end
   end
 
