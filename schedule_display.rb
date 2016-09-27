@@ -10,7 +10,7 @@ class TrainDisplay
   
   def open_csv(file_path='files/trains.csv')
     binding.pry
-    CSV.open(file_path, headers: true, skip_blanks: true).read
+    CSV.open(file_path, headers: true, skip_blanks: true).reject { |row| row.all?(&:nil?) }.read
   end
 
   #this sort should be better, but I'm running out of time.
@@ -30,10 +30,10 @@ get '/' do
   redirect '/upload'
 end
 
-get '/schedule' do 
+#this should be touched up by adding a method or page that allows you to select uploaded
+#schedules
+get '/inital_schedule' do 
   binding.pry
-  #this should be touched up by adding a method or page that allows you to select uploaded
-  #schedules
   @table_schedule = TrainDisplay.new.open_csv
   erb :table_view 
 end
