@@ -34,7 +34,7 @@ class TrainDisplay
 
   #this could also be cleaner, feedback appreciated.  
   #I'd like to not have to convert to array to sort, not sure that's possible.
-  def sort(csv_table, organize_by="RUN_NUMBER")
+  def sort(csv_table, organize_by=:run_number)
     sorting_array = []
     csv_table.each { |row| sorting_array.push(row)}
     sorting_array.sort_by! { |row| row[organize_by]}
@@ -46,8 +46,9 @@ class TrainDisplay
     schedule = open(file_path)
     schedule = make_entries_unique(schedule)
     schedule = delete_empty_rows(schedule)
-    schedule = sort(schedule)
-    @table_schedule = schedule.read
+    binding.pry
+    sort(schedule)
+    binding.pry
   end
 
   def upload(filename, file)
@@ -66,8 +67,8 @@ end
 #this should be touched up by adding a method or page that allows you 
 #to select all uploaded schedules
 get '/first_schedule' do
+  @table_schedule = TrainDisplay.new.schedule_open_and_display('lib/trains.csv')
   binding.pry
-  TrainDisplay.new.schedule_open_and_display('lib/trains.csv')
   erb :table_view 
 end
 
@@ -92,7 +93,7 @@ describe TrainDisplay do
   describe "#open" do
     it "creates a table CSV object from a file uploaded to lib adding headers" do
       schedule = TrainDisplay.new
-      expect(schedule.open).to be_instance_of(CSV::Table)
+      expect(schedule.open('lib/trains.csv')).to be_instance_of(CSV::Table)
     end
   end
 
