@@ -43,8 +43,8 @@ get '/' do
   redirect '/upload'
 end
 
-#this should be touched up by adding a method or page that allows you to select uploaded
-#schedules
+#this should be touched up by adding a method or page that allows you 
+#to select uploaded schedules
 get '/first_schedule' do 
   TrainDisplay.new.sanitize_csv
   erb :table_view 
@@ -78,8 +78,8 @@ describe TrainDisplay do
   describe "#sort" do
     it "organizes values based on a header value" do
       schedule = TrainDisplay.new
-      sample_table = CSV.parse("Name,Age\nMaria,95\nJamal,55\nDan,34", headers: true)
-      expect(schedule.sort(csv_table, :Age).first).to equal(<CSV::Row "Name":"Dan" "Age":"34">)
+      sample_table = CSV.parse("Name,Age\nMaria,95\nDerek,55\nDan,34", headers: true)
+      expect(schedule.sort(csv_table, :Age).first.parse).to equal("#<CSV::Row \"Name\":\"Dan\" \"Age\":\"34\">")
     end
   end
 
