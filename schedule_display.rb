@@ -13,10 +13,6 @@ class TrainDisplay
     @table_schedule = CSV.table(file_path, headers: true)
   end
 
-  def sort(csv_table, organize_by="RUN_NUMBER")
-    csv_table
-  end
-
   #I want this code to be cleaner, but dont' know how to make it so, feedback appreciated
   def make_entries_unique(csv_table)
     comparison_entries = []
@@ -34,6 +30,12 @@ class TrainDisplay
     csv_table.delete_if do |row| 
       row.to_hash.values.join.strip.empty? || nil?
     end
+  end
+
+  #it was hard to sort and maintain the CSV::table structure, so this returns an array
+  #this function should be run last before display
+  def sort(csv_table, organize_by="RUN_NUMBER")
+    csv_table.read.sort_by{ |row| row[organize_by] }
   end
 
 end
