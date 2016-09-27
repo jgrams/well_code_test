@@ -10,10 +10,9 @@ require 'pry'
 
 #controller
 class TrainDisplay
-  
   #returns a CSV table that's been sanitized and organized
-  def sanitize_csv(file_path='files/trains.csv', organize_by="RUN_NUMBER")
-    @table_schedule = CSV.foreach(file_path, headers: true) do |row|
+  def open(file_path='lib/trains.csv', organize_by="RUN_NUMBER")
+    @table_schedule = CSV.table(file_path, headers: true) do |row|
       #if a joined string (stripped of whitespace) of all the values for a row is empty or nil, delete the row
       if row.to_hash.values.join.strip.empty? || nil?
         row.delete
@@ -23,7 +22,18 @@ class TrainDisplay
     end
   end
 
-  def sort(csv_table)
+  def sort(opened_csv_table)
+  end
+
+  def unique_entries(opened_csv_table)
+  end
+
+  def delete_
+  end
+
+  def open_sort_csv(file_path='lib/trains.csv')
+    CSV.open(file_path, headers: true).read
+>>>>>>> 308969c1551b7edb3cc18f198f67ef8dfe53c5af
   end
 
 end
@@ -44,21 +54,22 @@ get '/upload' do
   erb :upload
 end
 
-#saves new CSVs to /files
+#saves new CSVs to /lib
 post '/upload' do 
   @filename = params[:file][:filename]
   file = params[:file][:tempfile]
-  File.open("files/#{@filename}", 'wb') do |f|
+  File.open("lib/#{@filename}", 'wb') do |f|
     f.write(file.read)
   end
-  TrainDisplay.new.sanitize_csv("files/#{@filename}")
+  TrainDisplay.new.sanitize_csv("lib/#{@filename}")
+  @table_schedule = TrainDisplay.new.open_sort_csv("lib/#{@filename}")
   erb :table_view
 end
 
 
 #tests
 describe TrainDisplay do
-  describe "#sanitize_csv" do
+  describe "#open" do
     it "strips empty rows from a CSV object" do
       schedule = TrainDisplay.new
       expect(schedule.sanitize_csv).to be_instance_of(CSV::Table)
