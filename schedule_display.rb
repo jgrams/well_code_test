@@ -8,19 +8,14 @@ require 'pry'
 #controller
 class TrainDisplay
   
-  def open_csv(file_path='files/trains.csv')
-    binding.pry
-    CSV.open(file_path, headers: true, skip_blanks: true).reject { |row| row.all?(&:nil?) }.read
-  end
-
-  #this sort should be better, but I'm running out of time.
-  def sort(file_path='files/trains.csv')
+  def open_sort_csv(file_path='files/trains.csv')
     rows = []
     CSV.foreach(file_path, headers: true) do |row|
       rows << row.to_h
     end
-    binding.pry
     rows.sort_by{ |row| row['RUN_NUMBER'] }
+    rows
+    binding.pry
   end
 
 end
@@ -32,9 +27,9 @@ end
 
 #this should be touched up by adding a method or page that allows you to select uploaded
 #schedules
-get '/inital_schedule' do 
+get '/first_schedule' do 
   binding.pry
-  @table_schedule = TrainDisplay.new.open_csv
+  @table_schedule = TrainDisplay.new.open_sort_csv
   erb :table_view 
 end
 
@@ -48,7 +43,7 @@ post '/upload' do
   File.open("files/#{@filename}", 'wb') do |f|
     f.write(file.read)
   end
-  @table_schedule = TrainDisplay.new.open_csv("files/#{@filename}")
+  @table_schedule = TrainDisplay.new.open_sort_csv("files/#{@filename}")
   erb :table_view
 end
 
