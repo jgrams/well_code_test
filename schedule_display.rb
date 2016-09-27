@@ -2,15 +2,13 @@ require 'csv'
 require 'sinatra'
 require 'rspec'
 require 'pry'
-#tdd attempt at making a train display that will take a .csv file and return
-#an organized list of trains and schedules.
+#tdd attempt at making a train display that will take a .csv file,
+#sanetize it in some ways, then an organized list of trains and schedules.
 
-#improvements:
-#sanitize uploads rather than sanetizing upon display
 
 #controller
 class TrainDisplay
-  #returns a CSV table that's been sanitized and organized
+
   def open(file_path='lib/trains.csv')
     @table_schedule = CSV.table(file_path, headers: true)
   end
@@ -18,11 +16,21 @@ class TrainDisplay
   def sort(opened_csv_table, organize_by="RUN_NUMBER")
   end
 
-  def unique_entries(opened_csv_table)
+  #this code is sloppy and a bit hard to follow, any feedback on how to clean it up would be appreciated
+  def unique_entries(csv_table)
+    comparison_entries = []
+    csv_table.delete_if do |row|
+      if comparison_entries.include?(row.inspect)
+        true
+      else
+        comparison_entries.push(row.inspect)
+        false
+      end
+    end
   end
 
-  def delete_empty_rows(opened_csv_table)
-    opened_csv_table.delete_if do |row| 
+  def delete_empty_rows(csv_table)
+    csv_table.delete_if do |row| 
       row.to_hash.values.join.strip.empty? || nil?
     end
   end
@@ -52,7 +60,6 @@ post '/upload' do
   File.open("lib/#{@filename}", 'wb') do |f|
     f.write(file.read)
   end
-  TrainDisplay.new.sanitize_csv("lib/#{@filename}")
   @table_schedule = TrainDisplay.new.open("lib/#{@filename}")
   erb :table_view
 end
@@ -78,7 +85,7 @@ describe TrainDisplay do
     it "deletes duplicate rows from a CSV::Table object" do
       schedule = TrainDisplay.new
       sample_table = CSV.parse("Name,Age\nDan,34\nMaria,55\nDan,34\n    ,  ", headers: true)
-      expect(schedule.uniqie_entries(sample_table).length).to equal(3)
+      expect(schedule.unique_entries(sample_table).length).to equal(3)
     end
   end
 
