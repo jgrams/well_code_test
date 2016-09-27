@@ -3,7 +3,7 @@ require 'sinatra'
 require 'rspec'
 require 'pry'
 #tdd attempt at making a train display that will take a .csv file,
-#sanetize it in some ways, then an organized list of trains and schedules.
+#sanetize it in some ways, then output an organized list of trains and schedules.
 
 
 #controller
@@ -13,7 +13,6 @@ class TrainDisplay
     @table_schedule = CSV.table(file_path, headers: true)
   end
 
-  #I want this code to be cleaner, but dont' know how to make it so, feedback appreciated
   def make_entries_unique(csv_table)
     comparison_entries = []
     csv_table.delete_if do |row|
@@ -32,8 +31,6 @@ class TrainDisplay
     end
   end
 
-  #this could also be cleaner, feedback appreciated.  
-  #I'd like to not have to convert to array to sort, not sure that's possible.
   def sort(csv_table, organize_by=:run_number)
     sorting_array = []
     csv_table.each { |row| sorting_array.push(row)}
@@ -41,7 +38,7 @@ class TrainDisplay
     return CSV::Table.new(sorting_array)
   end
 
-  #runs the above functions for sinatra display
+  #organizes the above functions for sinatra
   def schedule_open_and_display(file_path)
     schedule = open(file_path)
     schedule = make_entries_unique(schedule)
@@ -50,16 +47,16 @@ class TrainDisplay
   end
 
   def upload(filename, file)
-    File.open("lib/#{filename}", 'wb') do |f|
-      f.write(file.read)
+    File.open("lib/#{filename}", 'wb') do |file|
+      file.write(file.read)
     end
   end
 
 end
 
-#sinatra
+#sinatra routing
 get '/' do
-  redirect '/upload'
+  redirect '/first_schedule'
 end
 
 #this should be touched up by adding a method or page that allows you 
