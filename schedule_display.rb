@@ -14,8 +14,6 @@ class TrainDisplay
       rows << row.to_h
     end
     rows.sort_by{ |row| row['RUN_NUMBER'] }
-    rows
-    binding.pry
   end
 
 end
@@ -28,7 +26,6 @@ end
 #this should be touched up by adding a method or page that allows you to select uploaded
 #schedules
 get '/first_schedule' do 
-  binding.pry
   @table_schedule = TrainDisplay.new.open_sort_csv
   erb :table_view 
 end
