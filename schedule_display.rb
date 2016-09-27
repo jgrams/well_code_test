@@ -9,8 +9,9 @@ require 'pry'
 class TrainDisplay
   
   def open(file_path='files/trains.csv')
-    @table = CSV.open(file_path, :headers => true)
-    @table.sort(file_path)
+    binding.pry
+    sort(file_path)
+    CSV.open(file_path, headers: true)
   end
 
   #this sort should be better, but I'm running out of time.
@@ -19,6 +20,7 @@ class TrainDisplay
     CSV.foreach(file_path, headers: true) do |row|
       rows << row.to_h
     end
+    binding.pry
     rows.sort_by{ |row| row['RUN_NUMBER'] }
   end
 
@@ -37,13 +39,13 @@ get '/upload' do
   erb :upload
 end
 
-post "/upload" do 
+post '/upload' do 
   @filename = params[:file][:filename]
   file = params[:file][:tempfile]
-  File.open("./files/#{@filename}", 'wb') do |f|
+  File.open("files/#{@filename}", 'wb') do |f|
     f.write(file.read)
   end
-  @table_schedule = TrainDisplay.new.open("./files/#{@filename}")
+  @table_schedule = TrainDisplay.new.open("files/#{@filename}")
   erb :table_view
 end
 
