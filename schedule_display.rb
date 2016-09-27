@@ -32,12 +32,19 @@ class TrainDisplay
     end
   end
 
-  #this could also be cleaner
+  #this could also be cleaner, feedback appreciated.  
+  #I'd like to not have to convert to array to sort, not sure that's possible.
   def sort(csv_table, organize_by="RUN_NUMBER")
     sorting_array = []
     csv_table.each { |row| sorting_array.push(row)}
     sorting_array.sort_by! { |row| row[organize_by]}
     CSV::Table.new(sorting_array)
+  end
+
+  def upload(filename, file)
+    File.open("lib/#{@filename}", 'wb') do |f|
+      f.write(file.read)
+    end
   end
 
 end
@@ -60,11 +67,9 @@ end
 
 #saves new CSVs to /lib
 post '/upload' do 
-  @filename = params[:file][:filename]
+  filename = params[:file][:filename]
   file = params[:file][:tempfile]
-  File.open("lib/#{@filename}", 'wb') do |f|
-    f.write(file.read)
-  end
+
   @table_schedule = TrainDisplay.new.open("lib/#{@filename}")
   erb :table_view
 end
@@ -80,7 +85,7 @@ describe TrainDisplay do
   end
 
   describe "#sort" do
-    it "organizes values based on a header value" do
+    it "organizes values based on a passed in header value" do
       schedule = TrainDisplay.new
       sample_table = CSV.parse("Name,Age\nMaria,95\nDerek,55\nDan,34", headers: true)
       expect(schedule.sort(sample_table, "Age").first).to equal("#<CSV::Row \"Name\":\"Dan\" \"Age\":\"34\">")
