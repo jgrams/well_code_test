@@ -11,13 +11,11 @@ require 'pry'
 #controller
 class TrainDisplay
   #returns a CSV table that's been sanitized and organized
-  def open(file_path='lib/trains.csv', organize_by="RUN_NUMBER")
-    @table_schedule = CSV.table(file_path, headers: true) do |row|
-      #if a joined string (stripped of whitespace) of all the values for a row is empty or nil, delete the row
-    end
+  def open(file_path='lib/trains.csv')
+    @table_schedule = CSV.table(file_path, headers: true)
   end
 
-  def sort(opened_csv_table)
+  def sort(opened_csv_table, organize_by="RUN_NUMBER")
   end
 
   def unique_entries(opened_csv_table)
@@ -26,6 +24,7 @@ class TrainDisplay
   def delete_empty_rows(opened_csv_table)
     opened_csv_table.delete_if do |row| 
       row.to_hash.values.join.strip.empty? || nil?
+    end
   end
 
 end
@@ -64,31 +63,29 @@ describe TrainDisplay do
   describe "#open" do
     it "creates a table CSV object from a file uploaded to lib" do
       schedule = TrainDisplay.new
-      expect(schedule.sanitize_csv).to be_instance_of(CSV::Table)
+      expect(schedule.open).to be_instance_of(CSV::Table)
     end
   end
 
-  describe "#sort" do
-    it "creates a table CSV object from a file uploaded to lib" do
-      schedule = TrainDisplay.new
-      expect(schedule.sanitize_csv).to be_instance_of(CSV::Table)
-    end
-  end
+  # describe "#sort" do
+  #   it "creates a table CSV object from a file uploaded to lib" do
+  #     schedule = TrainDisplay.new
+  #     expect(schedule.sanitize_csv).to be_instance_of(CSV::Table)
+  #   end
+  # end
 
-  describe "#unique_entries" do
-    it "creates a table CSV object from a file uploaded to lib" do
-      schedule = TrainDisplay.new
-      expect(schedule.sanitize_csv).to be_instance_of(CSV::Table)
-    end
-  end
+  # describe "#unique_entries" do
+  #   it "creates a table CSV object from a file uploaded to lib" do
+  #     schedule = TrainDisplay.new
+  #     expect(schedule.sanitize_csv).to be_instance_of(CSV::Table)
+  #   end
+  # end
 
   describe "#delete_empty_rows" do
     it "deletes empty rows for a CSV::Table object, returns empty rows" do
       schedule = TrainDisplay.new
-      sample_table = CSV.new([Maria,55,5054,"Good, delicious food"
-                    Carlos,22,4352,"I am ""pleased"", but could be better"
-                    " ",,nil,""])
-      expect(schedule.sanitize_csv).to be_instance_of(CSV::Table)
+      sample_table = CSV.parse("Name,Age\nDan,34\nMaria,55\n    ,  ", headers: true)
+      expect(schedule.delete_empty_rows(sample_table).length).to equal(2)
     end
   end
 
