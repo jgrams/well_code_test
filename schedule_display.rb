@@ -55,7 +55,7 @@ get '/' do
 end
 
 #this should be touched up by adding a method or page that allows you 
-#to select uploaded schedules
+#to select all uploaded schedules
 get '/first_schedule' do 
   TrainDisplay.new.open
   erb :table_view 
@@ -65,11 +65,12 @@ get '/upload' do
   erb :upload
 end
 
-#saves new CSVs to /lib
+#saves new CSVs to /lib/[filename]
 post '/upload' do 
   filename = params[:file][:filename]
   file = params[:file][:tempfile]
-  TrainDisplay.new.upload(filename, file)
+  obj = TrainDisplay.new.upload(filename, file)
+
   @table_schedule = TrainDisplay.new.open("lib/#{@filename}")
   erb :table_view
 end
@@ -78,7 +79,7 @@ end
 #tests
 describe TrainDisplay do
   describe "#open" do
-    it "creates a table CSV object from a file uploaded to lib" do
+    it "creates a table CSV object from a file uploaded to lib adding headers" do
       schedule = TrainDisplay.new
       expect(schedule.open).to be_instance_of(CSV::Table)
     end
@@ -88,7 +89,7 @@ describe TrainDisplay do
     it "organizes values based on a passed in header value" do
       schedule = TrainDisplay.new
       sample_table = CSV.parse("Name,Age\nMaria,95\nDerek,55\nDan,34", headers: true)
-      expect(schedule.sort(sample_table, "Age").first).to equal("#<CSV::Row \"Name\":\"Dan\" \"Age\":\"34\">")
+      expect(schedule.sort(sample_table, "Age").first["Age"]).to eq("34")
     end
   end
 
