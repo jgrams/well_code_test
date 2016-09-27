@@ -8,7 +8,7 @@ require 'pry'
 #controller
 class TrainDisplay
   
-  def open(file_path='files/trains.csv')
+  def open_csv(file_path='files/trains.csv')
     binding.pry
     CSV.open(file_path, headers: true, skip_blanks: true).read
   end
@@ -34,7 +34,7 @@ get '/schedule' do
   binding.pry
   #this should be touched up by adding a method or page that allows you to select uploaded
   #schedules
-  @table_schedule = TrainDisplay.new.open
+  @table_schedule = TrainDisplay.new.open_csv
   erb :table_view 
 end
 
@@ -48,8 +48,7 @@ post '/upload' do
   File.open("files/#{@filename}", 'wb') do |f|
     f.write(file.read)
   end
-  @table_schedule = TrainDisplay.new.open("files/#{@filename}")
-  binding.pry
+  @table_schedule = TrainDisplay.new.open_csv("files/#{@filename}")
   erb :table_view
 end
 
