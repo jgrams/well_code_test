@@ -10,12 +10,11 @@ class TrainDisplay
   
   def open(file_path='files/trains.csv')
     binding.pry
-    sort(file_path)
-    CSV.open(file_path, headers: true)
+    CSV.open(file_path, headers: true, skip_blanks: true).read
   end
 
   #this sort should be better, but I'm running out of time.
-  def sort(file_path)
+  def sort(file_path='files/trains.csv')
     rows = []
     CSV.foreach(file_path, headers: true) do |row|
       rows << row.to_h
@@ -27,6 +26,10 @@ class TrainDisplay
 end
 
 #sinatra
+get '/' do
+  redirect '/upload'
+end
+
 get '/schedule' do 
   binding.pry
   #this should be touched up by adding a method or page that allows you to select uploaded
@@ -46,6 +49,7 @@ post '/upload' do
     f.write(file.read)
   end
   @table_schedule = TrainDisplay.new.open("files/#{@filename}")
+  binding.pry
   erb :table_view
 end
 
