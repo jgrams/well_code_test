@@ -69,7 +69,7 @@ end
 post '/upload' do 
   filename = params[:file][:filename]
   file = params[:file][:tempfile]
-
+  TrainDisplay.new.upload(filename, file)
   @table_schedule = TrainDisplay.new.open("lib/#{@filename}")
   erb :table_view
 end
