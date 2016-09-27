@@ -79,7 +79,7 @@ describe TrainDisplay do
     it "organizes values based on a header value" do
       schedule = TrainDisplay.new
       sample_table = CSV.parse("Name,Age\nMaria,95\nDerek,55\nDan,34", headers: true)
-      expect(schedule.sort(csv_table, :Age).first.parse).to equal("#<CSV::Row \"Name\":\"Dan\" \"Age\":\"34\">")
+      expect(schedule.sort(sample_table, :Age).first.inspect).to equal("#<CSV::Row \"Name\":\"Dan\" \"Age\":\"34\">")
     end
   end
 
