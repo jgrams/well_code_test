@@ -9,7 +9,17 @@ require 'pry'
 class TrainDisplay
   
   def open(file_path='files/trains.csv')
-    @table_schedule = CSV.open(file_path, :headers => true)
+    @table = CSV.open(file_path, :headers => true)
+    @table.sort(file_path)
+  end
+
+  #this sort should be better, but I'm running out of time.
+  def sort(file_path)
+    rows = []
+    CSV.foreach(file_path, headers: true) do |row|
+      rows << row.to_h
+    end
+    rows.sort_by{ |row| row['RUN_NUMBER'] }
   end
 
 end
@@ -17,13 +27,9 @@ end
 #sinatra
 get '/schedule' do 
   binding.pry
-  #this should be touched up if this is expanded at all, it'll break things down the road
-  #as soon as I add anything else to params
-  if !params.empty?
-    @table_schedule = TrainDisplay.new.open('files/' << params[:filename])
-  else
-    @table_schedule = TrainDisplay.new.open
-  end
+  #this should be touched up by adding a method or page that allows you to select uploaded
+  #schedules
+  @table_schedule = TrainDisplay.new.open
   erb :table_view 
 end
 
@@ -32,12 +38,13 @@ get '/upload' do
 end
 
 post "/upload" do 
-  binding.pry
-  File.open('files/' + params['file'][:filename], "w") do |f|
-    f.write(params['file'][:tempfile].read)
+  @filename = params[:file][:filename]
+  file = params[:file][:tempfile]
+  File.open("./files/#{@filename}", 'wb') do |f|
+    f.write(file.read)
   end
-  redirect '/schedule'
-  binding.pry
+  @table_schedule = TrainDisplay.new.open("./files/#{@filename}")
+  erb :table_view
 end
 
 
@@ -49,4 +56,12 @@ describe TrainDisplay do
       expect(schedule.open).to be_instance_of(CVS)
     end
   end
+
+    describe "#sort" do
+    it "sort the contents of a CSV file" do
+      schedule = TrainDisplay.new
+      expect(schedule.open).to be_instance_of(CVS)
+    end
+  end
+
 end
