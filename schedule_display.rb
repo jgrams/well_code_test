@@ -13,11 +13,12 @@ class TrainDisplay
     @table_schedule = CSV.table(file_path, headers: true)
   end
 
-  def sort(opened_csv_table, organize_by="RUN_NUMBER")
+  def sort(csv_table, organize_by="RUN_NUMBER")
+    csv_table
   end
 
-  #this code is sloppy and a bit hard to follow, any feedback on how to clean it up would be appreciated
-  def unique_entries(csv_table)
+  #I want this code to be cleaner, but dont' know how to make it so, feedback appreciated
+  def make_entries_unique(csv_table)
     comparison_entries = []
     csv_table.delete_if do |row|
       if comparison_entries.include?(row.inspect)
@@ -74,23 +75,24 @@ describe TrainDisplay do
     end
   end
 
-  # describe "#sort" do
-  #   it "creates a table CSV object from a file uploaded to lib" do
-  #     schedule = TrainDisplay.new
-  #     expect(schedule.sanitize_csv).to be_instance_of(CSV::Table)
-  #   end
-  # end
+  describe "#sort" do
+    it "organizes values based on a header value" do
+      schedule = TrainDisplay.new
+      sample_table = CSV.parse("Name,Age\nMaria,95\nJamal,55\nDan,34", headers: true)
+      expect(schedule.sort(csv_table, :Age).first).to equal(<CSV::Row "Name":"Dan" "Age":"34">)
+    end
+  end
 
-  describe "#unique_entries" do
+  describe "#make_entries_unique" do
     it "deletes duplicate rows from a CSV::Table object" do
       schedule = TrainDisplay.new
       sample_table = CSV.parse("Name,Age\nDan,34\nMaria,55\nDan,34\n    ,  ", headers: true)
-      expect(schedule.unique_entries(sample_table).length).to equal(3)
+      expect(schedule.make_entries_unique(sample_table).length).to equal(3)
     end
   end
 
   describe "#delete_empty_rows" do
-    it "deletes empty rows for a CSV::Table object, returns empty rows" do
+    it "deletes empty rows for a CSV::Table object" do
       schedule = TrainDisplay.new
       sample_table = CSV.parse("Name,Age\nDan,34\nMaria,55\n    ,  ", headers: true)
       expect(schedule.delete_empty_rows(sample_table).length).to equal(2)
