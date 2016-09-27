@@ -32,10 +32,9 @@ class TrainDisplay
     end
   end
 
-  #it was hard to sort and maintain the CSV::table structure, so this returns an array
-  #this function should be run last before display
+  #will return array, not a CSV table, so should be run last
   def sort(csv_table, organize_by="RUN_NUMBER")
-    csv_table.read.sort_by{ |row| row[organize_by] }
+    csv_table.read
   end
 
 end
