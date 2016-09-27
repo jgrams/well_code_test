@@ -29,14 +29,14 @@ get '/upload' do
   erb :upload
 end
 
-#saves new CSVs to /files
+#saves new CSVs to /lib
 post '/upload' do 
   @filename = params[:file][:filename]
   file = params[:file][:tempfile]
-  File.open("files/#{@filename}", 'wb') do |f|
+  File.open("lib/#{@filename}", 'wb') do |f|
     f.write(file.read)
   end
-  @table_schedule = TrainDisplay.new.open_sort_csv("files/#{@filename}")
+  @table_schedule = TrainDisplay.new.open_sort_csv("lib/#{@filename}")
   erb :table_view
 end
 
