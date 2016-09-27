@@ -29,7 +29,7 @@ get '/upload' do
   erb :upload
 end
 
-#saves file and 
+#saves new CSVs to /files
 post '/upload' do 
   @filename = params[:file][:filename]
   file = params[:file][:tempfile]
@@ -46,7 +46,7 @@ describe TrainDisplay do
   describe "#open" do
     it "returns the contents of CSV file as a CSV ruby object" do
       schedule = TrainDisplay.new
-      expect(schedule.open).to be_instance_of(CSV)
+      expect(schedule.open_sort_csv).to be_instance_of(CSV::Table)
     end
   end
 
