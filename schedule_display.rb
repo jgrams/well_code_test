@@ -7,7 +7,7 @@ require 'rspec'
 #controller
 class TrainDisplay
   
-  def open_sort_csv(file_path='files/trains.csv')
+  def open_sort_csv(file_path='lib/trains.csv')
     CSV.open(file_path, headers: true).read
   end
 
