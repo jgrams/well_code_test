@@ -34,7 +34,8 @@ class TrainDisplay
 
   #will return array, not a CSV table, so should be run last
   def sort(csv_table, organize_by="RUN_NUMBER")
-    csv_table.read
+    binding.pry
+    csv_table.to_h.sort_by{ |row| row[organize_by] }
   end
 
 end
@@ -80,7 +81,7 @@ describe TrainDisplay do
     it "organizes values based on a header value" do
       schedule = TrainDisplay.new
       sample_table = CSV.parse("Name,Age\nMaria,95\nDerek,55\nDan,34", headers: true)
-      expect(schedule.sort(sample_table, :Age).first.inspect).to equal("#<CSV::Row \"Name\":\"Dan\" \"Age\":\"34\">")
+      expect(schedule.sort(sample_table, "Age").first.inspect).to equal("#<CSV::Row \"Name\":\"Dan\" \"Age\":\"34\">")
     end
   end
 
