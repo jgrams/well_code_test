@@ -8,11 +8,7 @@ require 'rspec'
 class TrainDisplay
   
   def open_sort_csv(file_path='files/trains.csv')
-    rows = []
-    CSV.foreach(file_path, headers: true) do |row|
-      rows << row.to_h
-    end
-    rows.sort_by{ |row| row['RUN_NUMBER'] }
+    CSV.open(file_path, headers: true).read
   end
 
 end
