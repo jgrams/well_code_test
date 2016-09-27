@@ -32,10 +32,12 @@ class TrainDisplay
     end
   end
 
-  #will return array, not a CSV table, so should be run last
+  #this could also be cleaner
   def sort(csv_table, organize_by="RUN_NUMBER")
-    binding.pry
-    csv_table.to_h.sort_by{ |row| row[organize_by] }
+    sorting_array = []
+    csv_table.each { |row| sorting_array.push(row)}
+    sorting_array.sort_by! { |row| row[organize_by]}
+    CSV::Table.new(sorting_array)
   end
 
 end
@@ -48,7 +50,7 @@ end
 #this should be touched up by adding a method or page that allows you 
 #to select uploaded schedules
 get '/first_schedule' do 
-  TrainDisplay.new.sanitize_csv
+  TrainDisplay.new.open
   erb :table_view 
 end
 
@@ -81,7 +83,7 @@ describe TrainDisplay do
     it "organizes values based on a header value" do
       schedule = TrainDisplay.new
       sample_table = CSV.parse("Name,Age\nMaria,95\nDerek,55\nDan,34", headers: true)
-      expect(schedule.sort(sample_table, "Age").first.inspect).to equal("#<CSV::Row \"Name\":\"Dan\" \"Age\":\"34\">")
+      expect(schedule.sort(sample_table, "Age").first).to equal("#<CSV::Row \"Name\":\"Dan\" \"Age\":\"34\">")
     end
   end
 
