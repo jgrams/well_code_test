@@ -53,7 +53,7 @@ post '/upload' do
     f.write(file.read)
   end
   TrainDisplay.new.sanitize_csv("lib/#{@filename}")
-  @table_schedule = TrainDisplay.new.open_sort_csv("lib/#{@filename}")
+  @table_schedule = TrainDisplay.new.open("lib/#{@filename}")
   erb :table_view
 end
 
@@ -74,12 +74,13 @@ describe TrainDisplay do
   #   end
   # end
 
-  # describe "#unique_entries" do
-  #   it "creates a table CSV object from a file uploaded to lib" do
-  #     schedule = TrainDisplay.new
-  #     expect(schedule.sanitize_csv).to be_instance_of(CSV::Table)
-  #   end
-  # end
+  describe "#unique_entries" do
+    it "deletes duplicate rows from a CSV::Table object" do
+      schedule = TrainDisplay.new
+      sample_table = CSV.parse("Name,Age\nDan,34\nMaria,55\nDan,34\n    ,  ", headers: true)
+      expect(schedule.uniqie_entries(sample_table).length).to equal(3)
+    end
+  end
 
   describe "#delete_empty_rows" do
     it "deletes empty rows for a CSV::Table object, returns empty rows" do
