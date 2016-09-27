@@ -14,11 +14,6 @@ class TrainDisplay
   def open(file_path='lib/trains.csv', organize_by="RUN_NUMBER")
     @table_schedule = CSV.table(file_path, headers: true) do |row|
       #if a joined string (stripped of whitespace) of all the values for a row is empty or nil, delete the row
-      if row.to_hash.values.join.strip.empty? || nil?
-        row.delete
-      else
-        row
-      end
     end
   end
 
@@ -28,12 +23,9 @@ class TrainDisplay
   def unique_entries(opened_csv_table)
   end
 
-  def delete_
-  end
-
-  def open_sort_csv(file_path='lib/trains.csv')
-    CSV.open(file_path, headers: true).read
->>>>>>> 308969c1551b7edb3cc18f198f67ef8dfe53c5af
+  def delete_empty_rows(opened_csv_table)
+    opened_csv_table.delete_if do |row| 
+      row.to_hash.values.join.strip.empty? || nil?
   end
 
 end
@@ -70,16 +62,33 @@ end
 #tests
 describe TrainDisplay do
   describe "#open" do
-    it "strips empty rows from a CSV object" do
+    it "creates a table CSV object from a file uploaded to lib" do
       schedule = TrainDisplay.new
       expect(schedule.sanitize_csv).to be_instance_of(CSV::Table)
     end
   end
 
-    describe "#sort" do
-    it "returns the contents of CSV file as a CSV ruby object" do
+  describe "#sort" do
+    it "creates a table CSV object from a file uploaded to lib" do
       schedule = TrainDisplay.new
-      expect(schedule.open_sort_csv).to be_instance_of(CSV::Table)
+      expect(schedule.sanitize_csv).to be_instance_of(CSV::Table)
+    end
+  end
+
+  describe "#unique_entries" do
+    it "creates a table CSV object from a file uploaded to lib" do
+      schedule = TrainDisplay.new
+      expect(schedule.sanitize_csv).to be_instance_of(CSV::Table)
+    end
+  end
+
+  describe "#delete_empty_rows" do
+    it "deletes empty rows for a CSV::Table object, returns empty rows" do
+      schedule = TrainDisplay.new
+      sample_table = CSV.new([Maria,55,5054,"Good, delicious food"
+                    Carlos,22,4352,"I am ""pleased"", but could be better"
+                    " ",,nil,""])
+      expect(schedule.sanitize_csv).to be_instance_of(CSV::Table)
     end
   end
 
