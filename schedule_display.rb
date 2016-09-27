@@ -47,8 +47,8 @@ class TrainDisplay
   end
 
   def upload(filename, file)
-    File.open("lib/#{filename}", 'wb') do |file|
-      file.write(file.read)
+    File.open("lib/#{filename}", 'wb') do |f|
+      f.write(file.read)
     end
   end
 
