@@ -1,6 +1,5 @@
 <table border="0" cellspacing="5" cellpadding="5">
   <tr>
-  <% binding.pry %>
   <% @table_schedule.headers.each do |header| %>
     <th><%= header %></th>
   <% end %> 
@@ -13,3 +12,6 @@
     </tr>
   <% end %> 
 </table>
+
+<a href= "/upload">Upload a New Schedule</a>
+<a href= "/first_schedule">See the Original Schedule</a>

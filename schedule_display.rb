@@ -50,7 +50,7 @@ class TrainDisplay
   end
 
   def upload(filename, file)
-    File.open("lib/#{@filename}", 'wb') do |f|
+    File.open("lib/#{filename}", 'wb') do |f|
       f.write(file.read)
     end
   end
@@ -66,7 +66,6 @@ end
 #to select all uploaded schedules
 get '/first_schedule' do
   @table_schedule = TrainDisplay.new.schedule_open_and_display('lib/trains.csv')
-  binding.pry
   erb :table_view 
 end
 
@@ -80,8 +79,7 @@ post '/upload' do
   filename = params[:file][:filename]
   file = params[:file][:tempfile]
   obj = TrainDisplay.new.upload(filename, file)
-
-  @table_schedule = TrainDisplay.new.schedule_open_and_display("lib/#{@filename}")
+  @table_schedule = TrainDisplay.new.schedule_open_and_display("lib/#{filename}")
   erb :table_view
 end
 
@@ -122,7 +120,7 @@ describe TrainDisplay do
   describe "#schedule_open_and_display" do
     it "runs all the sanetize and open function in a neat package for sinatra readability" do
       schedule = TrainDisplay.new
-      expect(schedule.open('lib/trains.csv')).to be_instance_of(CSV::Table)
+      expect(schedule.schedule_open_and_display('lib/trains.csv')).to be_instance_of(CSV::Table)
     end
   end
 
